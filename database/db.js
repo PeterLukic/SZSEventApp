@@ -29,13 +29,21 @@ export async function initDB() {
       if (!existingRows || existingRows.length === 0) {
         console.log("No events found in DB — inserting sample data...");
         await db.execAsync(`
-          INSERT INTO events (eventid, eventdate, title, townname, countryname, imagepath) 
+          INSERT OR IGNORE INTO events (eventid, eventdate, title, townname, countryname, imagepath) 
           VALUES 
-          (1, '03-12-2025', 'Квиз из блока, Bar 28', 'Граз', 'Аустриа', 'assets/images/events/EventGraz.jpg');
+          (1, '03-12-2025', 'Квиз из блока, Bar 28', 'Граз', 'Аустриа', 'assets/images/events/EventGraz.jpg'),
+          (2, '10-12-2025', 'Concert Night', 'Београд', 'Србија', 'assets/images/events/EventBelgrade.jpg');
         `);
         console.log("Sample data inserted");
       } else {
-        console.log(`Events table already has ${existingRows.length} row(s); skipping seed.`);
+        // Ensure sample events exist (safe in production because we use OR IGNORE)
+        console.log(`Events table already has ${existingRows.length} row(s); ensuring sample events exist.`);
+        await db.execAsync(`
+          INSERT OR IGNORE INTO events (eventid, eventdate, title, townname, countryname, imagepath) 
+          VALUES 
+          (1, '03-12-2025', 'Квиз из блока, Bar 28', 'Граз', 'Аустриа', 'assets/images/events/EventGraz.jpg'),
+          (2, '10-12-2025', 'Concert Night', 'Београд', 'Србија', 'assets/images/events/EventBelgrade.jpg');
+        `);
       }
       
       // Query and log the data
