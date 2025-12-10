@@ -24,17 +24,19 @@ export async function initDB() {
       `);
       console.log("Events table created or already exists");
       
-      // Always clear and reload data to reflect changes
-      console.log("Clearing existing data...");
-      await db.execAsync("DELETE FROM events");
-      
-      console.log("Inserting fresh data...");
-      await db.execAsync(`
-        INSERT INTO events (eventid, eventdate, title, townname, countryname, imagepath) 
-        VALUES 
-        (1, '03-12-2025', 'Квиз из блока, Bar 28', 'Граз', 'Аустриа', 'assets/images/events/EventGraz.jpg');
-      `);
-      console.log("Data loaded");
+      // Seed sample data only if the table is empty. Do NOT delete existing rows.
+      const existingRows = await db.getAllAsync("SELECT * FROM events");
+      if (!existingRows || existingRows.length === 0) {
+        console.log("No events found in DB — inserting sample data...");
+        await db.execAsync(`
+          INSERT INTO events (eventid, eventdate, title, townname, countryname, imagepath) 
+          VALUES 
+          (1, '03-12-2025', 'Квиз из блока, Bar 28', 'Граз', 'Аустриа', 'assets/images/events/EventGraz.jpg');
+        `);
+        console.log("Sample data inserted");
+      } else {
+        console.log(`Events table already has ${existingRows.length} row(s); skipping seed.`);
+      }
       
       // Query and log the data
       const result = await db.getAllAsync("SELECT * FROM events");
