@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "notes",
-    "slug": "notes",
+    "name": "SZS-Events-App",
+    "slug": "szs-events-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "notes",
+    "scheme": "szs-events-app",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
